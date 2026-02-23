@@ -278,7 +278,7 @@ def submit_coverage():
     save_submission(entry)
 
     # Send entry log to HR (in background thread so form responds instantly)
-    threading.Thread(target=send_hr_log_email, args=(entry), daemon=True).start()
+    threading.Thread(target=send_hr_log_email, args=(entry,), daemon=True).start()
 
     # Advance to next weekend (add 7 days to the dates just submitted)
     submitted_sat = datetime.strptime(entry["saturday_date"], "%Y-%m-%d")
@@ -290,6 +290,14 @@ def submit_coverage():
         sun=next_sun.strftime("%Y-%m-%d"),
         submitted="1"
     ))
+
+
+@app.route("/entry-log")
+def entry_log():
+    """View all past submissions in a clean table."""
+    submissions = load_submissions()
+    submissions.reverse()  # Most recent first
+    return render_template("entry_log.html", submissions=submissions)
 
 
 @app.route("/success")
