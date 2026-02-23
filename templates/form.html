@@ -6,41 +6,126 @@
     <title>Weekend Coverage</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: white; border-radius: 16px; padding: 40px; width: 100%; max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-        h1 { color: #2c3e50; font-size: 24px; margin-bottom: 8px; }
-        .subtitle { color: #95a5a6; font-size: 14px; margin-bottom: 30px; }
-        .field { margin-bottom: 24px; }
-        .field label { display: block; font-weight: 600; color: #2c3e50; margin-bottom: 6px; font-size: 14px; }
-        .field .date-display { color: #7f8c8d; font-size: 13px; margin-bottom: 8px; }
-        .field input[type="text"] { width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; transition: border-color 0.2s; outline: none; }
-        .field input[type="text"]:focus { border-color: #667eea; }
-        .submit-btn { width: 100%; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; }
-        .submit-btn:hover { background: #219a52; }
-        .day-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; color: white; margin-bottom: 8px; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #95a5a6;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .field {
+            margin-bottom: 24px;
+        }
+        .field label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .field .date-display {
+            color: #7f8c8d;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .field input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .field input[type="text"]:focus {
+            border-color: #667eea;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: #219a52;
+        }
+        .day-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
         .saturday { background: #3498db; }
         .sunday { background: #e67e22; }
+        .success-banner {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="card">
+        {% if request.args.get('submitted') %}
+        <div class="success-banner">Previous week submitted! Log sent to HR. Now enter next week's coverage below.</div>
+        {% endif %}
         <h1>Weekend Coverage</h1>
         <p class="subtitle">Enter the doctor on call for each day</p>
+
         <form action="/submit-coverage" method="POST">
             <input type="hidden" name="saturday_date" value="{{ sat }}">
             <input type="hidden" name="sunday_date" value="{{ sun }}">
+
             <div class="field">
                 <span class="day-badge saturday">Saturday</span>
                 <div class="date-display">{{ sat }}</div>
                 <label for="saturday_doctor">Doctor Name</label>
-                <input type="text" id="saturday_doctor" name="saturday_doctor" placeholder="Type doctor name..." required autocomplete="off">
+                <input type="text" id="saturday_doctor" name="saturday_doctor"
+                       placeholder="Type doctor name..." required autocomplete="off">
             </div>
+
             <div class="field">
                 <span class="day-badge sunday">Sunday</span>
                 <div class="date-display">{{ sun }}</div>
                 <label for="sunday_doctor">Doctor Name</label>
-                <input type="text" id="sunday_doctor" name="sunday_doctor" placeholder="Type doctor name..." required autocomplete="off">
+                <input type="text" id="sunday_doctor" name="sunday_doctor"
+                       placeholder="Type doctor name..." required autocomplete="off">
             </div>
+
             <button type="submit" class="submit-btn">Submit Coverage</button>
         </form>
     </div>
