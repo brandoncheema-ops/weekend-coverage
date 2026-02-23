@@ -31,7 +31,7 @@
         .subtitle {
             color: #95a5a6;
             font-size: 14px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
         }
         .field {
             margin-bottom: 24px;
@@ -42,11 +42,6 @@
             color: #2c3e50;
             margin-bottom: 6px;
             font-size: 14px;
-        }
-        .field .date-display {
-            color: #7f8c8d;
-            font-size: 13px;
-            margin-bottom: 8px;
         }
         .field input[type="text"] {
             width: 100%;
@@ -60,6 +55,67 @@
         .field input[type="text"]:focus {
             border-color: #667eea;
         }
+        .weekend-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+            margin-bottom: 20px;
+        }
+        .weekend-select:focus {
+            border-color: #667eea;
+        }
+        .weekend-select option {
+            padding: 8px;
+            font-size: 14px;
+        }
+        .weekend-select option.upcoming {
+            font-weight: bold;
+        }
+        .selected-dates {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .date-card {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px 16px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+        }
+        .date-card.active {
+            border-color: #667eea;
+            background: #f0f1ff;
+        }
+        .date-card .day-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+        }
+        .date-card .date-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .saturday { background: #3498db; }
+        .sunday { background: #e67e22; }
         .submit-btn {
             width: 100%;
             padding: 14px;
@@ -76,17 +132,6 @@
         .submit-btn:hover {
             background: #219a52;
         }
-        .day-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 8px;
-        }
-        .saturday { background: #3498db; }
-        .sunday { background: #e67e22; }
         .success-banner {
             background: #e8f5e9;
             color: #2e7d32;
@@ -95,6 +140,13 @@
             margin-bottom: 20px;
             font-weight: 600;
             font-size: 14px;
+        }
+        .dropdown-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: block;
         }
     </style>
 </head>
@@ -107,21 +159,40 @@
         <p class="subtitle">Enter the doctor on call for each day</p>
 
         <form action="/submit-coverage" method="POST">
-            <input type="hidden" name="saturday_date" value="{{ sat }}">
-            <input type="hidden" name="sunday_date" value="{{ sun }}">
+            <input type="hidden" name="saturday_date" id="hidden_sat" value="{{ sat }}">
+            <input type="hidden" name="sunday_date" id="hidden_sun" value="{{ sun }}">
+
+            <!-- Weekend dropdown -->
+            <label class="dropdown-label">Select Weekend</label>
+            <select class="weekend-select" id="weekend-picker" onchange="updateDates()">
+                {% for w in weekends %}
+                <option value="{{ w.sat }}|{{ w.sun }}"
+                        {% if w.sat == sat %}selected{% endif %}>
+                    {{ w.sat }}  &mdash;  {{ w.sun }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <!-- Show selected dates -->
+            <div class="selected-dates">
+                <div class="date-card active">
+                    <span class="day-badge saturday">Saturday</span>
+                    <div class="date-value" id="display_sat">{{ sat }}</div>
+                </div>
+                <div class="date-card active">
+                    <span class="day-badge sunday">Sunday</span>
+                    <div class="date-value" id="display_sun">{{ sun }}</div>
+                </div>
+            </div>
 
             <div class="field">
-                <span class="day-badge saturday">Saturday</span>
-                <div class="date-display">{{ sat }}</div>
-                <label for="saturday_doctor">Doctor Name</label>
+                <label for="saturday_doctor">Saturday Doctor</label>
                 <input type="text" id="saturday_doctor" name="saturday_doctor"
                        placeholder="Type doctor name..." required autocomplete="off">
             </div>
 
             <div class="field">
-                <span class="day-badge sunday">Sunday</span>
-                <div class="date-display">{{ sun }}</div>
-                <label for="sunday_doctor">Doctor Name</label>
+                <label for="sunday_doctor">Sunday Doctor</label>
                 <input type="text" id="sunday_doctor" name="sunday_doctor"
                        placeholder="Type doctor name..." required autocomplete="off">
             </div>
@@ -129,5 +200,16 @@
             <button type="submit" class="submit-btn">Submit Coverage</button>
         </form>
     </div>
+
+    <script>
+        function updateDates() {
+            var picker = document.getElementById('weekend-picker');
+            var parts = picker.value.split('|');
+            document.getElementById('hidden_sat').value = parts[0];
+            document.getElementById('hidden_sun').value = parts[1];
+            document.getElementById('display_sat').textContent = parts[0];
+            document.getElementById('display_sun').textContent = parts[1];
+        }
+    </script>
 </body>
 </html>
