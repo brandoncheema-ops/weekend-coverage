@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Entry Log â Weekend Coverage</title>
+    <title>Entry Log &mdash; Weekend Coverage</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -126,7 +126,7 @@
 </head>
 <body>
     <div class="container">
-        <a href="/weekend-coverage" class="back-link">â Back to Form</a>
+        <a href="/weekend-coverage" class="back-link">&larr; Back to Form</a>
         <h1>Entry Log</h1>
         <p class="subtitle">All weekend coverage submissions</p>
 
@@ -137,7 +137,7 @@
             </div>
             <div class="stat-card">
                 <div class="number">
-                    {% if submissions %}{{ submissions[0].saturday_date }}{% else %}â{% endif %}
+                    {% if submissions %}{{ submissions[0].saturday_date }}{% else %}&mdash;{% endif %}
                 </div>
                 <div class="label">Most Recent</div>
             </div>
@@ -171,10 +171,9 @@
         {% else %}
         <div class="empty-state">
             <p>No entries yet.</p>
-            <a href="/weekend-coverage" class="back-link">Submit the first one â</a>
+            <a href="/weekend-coverage" class="back-link">Submit the first one &rarr;</a>
         </div>
         {% endif %}
     </div>
 </body>
 </html>
-
