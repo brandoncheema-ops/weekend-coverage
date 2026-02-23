@@ -28,7 +28,7 @@ app = Flask(__name__)
 GMAIL_USER = os.environ.get("GMAIL_USER", "")        # your Gmail address
 GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")  # Gmail App Password
 RECIPIENT_EMAIL = os.environ.get("RECIPIENT_EMAIL", "avolsky@gmail.com")
-HR_EMAIL = os.environ.get("HR_EMAIL", "hr@aagmia.com")
+HR_EMAIL = os.environ.get("HR_EMAIL", "brandoncheema@gmail.com")
 APP_URL = os.environ.get("APP_URL", "http://localhost:5000")  # your Render URL
 
 DATA_FILE = Path("data/submissions.json")
