@@ -126,7 +126,7 @@ def send_hr_log_email(new_entry):
     """
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Weekend Coverage Log â {new_entry['saturday_date']} & {new_entry['sunday_date']}"
+    msg["Subject"] = "Please see Doctors Hospital Last Weekend Coverage"
     msg["From"] = GMAIL_USER
     msg["To"] = HR_EMAIL
     msg.attach(MIMEText(html_body, "html"))
@@ -201,7 +201,7 @@ def send_weekly_email():
     sun_str = sunday.strftime("%B %d, %Y")
 
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"Weekend Coverage â {sat_str} & {sun_str}"
+    msg["Subject"] = "Please see Doctors Hospital Last Weekend Coverage"
     msg["From"] = GMAIL_USER
     msg["To"] = RECIPIENT_EMAIL
 
