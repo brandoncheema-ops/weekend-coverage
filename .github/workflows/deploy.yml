@@ -1,0 +1,25 @@
+name: Deploy to VPS
+on:
+  push:
+      branches: [main]
+      jobs:
+        deploy:
+            runs-on: ubuntu-latest
+                steps:
+                      - uses: actions/checkout@v4
+                            - name: Deploy to VPS
+                                    uses: appleboy/ssh-action@v1.0.3
+                                            with:
+                                                      host: ${{ secrets.VPS_HOST }}
+                                                                username: root
+                                                                          key: ${{ secrets.VPS_SSH_KEY }}
+                                                                                    script: |
+                                                                                                cd /tmp && rm -rf weekend-coverage
+                                                                                                            git clone --depth 1 https://github.com/brandoncheema-ops/weekend-coverage.git
+                                                                                                                        rm -f weekend-coverage/render.yaml
+                                                                                                                                    rsync -av --delete --exclude='.git' --exclude='venv' weekend-coverage/ /opt/apps/weekend-coverage/
+                                                                                                                                                cd /opt/apps/weekend-coverage
+                                                                                                                                                            python3 -m venv venv 2>/dev/null || true
+                                                                                                                                                                        source venv/bin/activate && pip install -r requirements.txt -q && deactivate
+                                                                                                                                                                                    pm2 restart weekend-coverage 2>/dev/null || pm2 start "/opt/apps/weekend-coverage/venv/bin/gunicorn app:app --bind 127.0.0.1:5001 --workers 2" --name weekend-coverage --cwd /opt/apps/weekend-coverage
+                                                                                                                                                                                                pm2 save && rm -rf /tmp/weekend-coverage
